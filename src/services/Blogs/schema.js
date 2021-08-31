@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
-const {Schema} = mongoose
+
+const {Schema, model} = mongoose
 
 const blogSchema = new Schema({
     category : {type:String, required: true},
@@ -22,22 +23,3 @@ const blogSchema = new Schema({
 
 export default model("Blog", blogSchema)
 
-
-
-// {
-//     "_id": "MONGO GENERATED ID",
-//     "category": "ARTICLE CATEGORY",
-//     "title": "ARTICLE TITLE",
-//     "cover":"ARTICLE COVER (IMAGE LINK)",
-//     "readTime": {
-//       "value": 2,
-//       "unit": "minute"
-//     },
-//     "author": {
-//       "name": "AUTHOR NAME",
-//       "avatar":"AUTHOR AVATAR LINK"
-//     },
-//     "content": "HTML",
-//     "createdAt": "DATE",
-//     "updatedAt": "DATE"           
-// }

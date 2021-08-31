@@ -3,6 +3,7 @@ import listEndpoints from 'express-list-endpoints'
 import cors from 'cors'
 import mongoose from 'mongoose'
 import blogRouter from './services/Blogs/index.js'
+import { badRequestErrorHandler, notFoundErrorHandler, catchAllErrorHandler  } from './services/errorHandlers.js'
 
 
 const server = express()
@@ -12,7 +13,11 @@ server.use(cors())
 server.use(express.json())
 
 
-server.use("/users", blogRouter)
+server.use("/blogs", blogRouter)
+
+server.use(badRequestErrorHandler)
+server.use(notFoundErrorHandler)
+server.use(catchAllErrorHandler)
 
 const { PORT } = process.env
 
