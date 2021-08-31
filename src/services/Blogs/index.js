@@ -17,7 +17,7 @@ blogRouter.get("/", async (req, res, next) => {
 
 blogRouter.get("/:id", async (req, res, next) => {
     try {
-        const singleData = await UserModel.findById(req.params.id)
+        const singleData = await BlogModel.findById(req.params.id)
         if (singleData) {
             res.send(singleData)
         } else {
@@ -44,7 +44,7 @@ blogRouter.put("/:id", async (req, res, next) => {
 
     try {
 
-        const updatedData = await UserModel.findByIdAndUpdate(req.params.id, req.body, {
+        const updatedData = await BlogModel.findByIdAndUpdate(req.params.id, req.body, {
             new: true
         })
 
@@ -62,7 +62,7 @@ blogRouter.put("/:id", async (req, res, next) => {
 blogRouter.delete("/:id", async (req, res, next) => {
 
     try {
-        const deletedData = await UserModel.findByIdAndDelete(req.params.id)
+        const deletedData = await BlogModel.findByIdAndDelete(req.params.id)
 
         if (deletedData) {
             res.status(204).send(`The blog with ID #${req.params.id} has been successfully deleted!`)
