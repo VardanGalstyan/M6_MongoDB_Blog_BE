@@ -160,13 +160,11 @@ blogRouter.get("/:id/comments/:commentId", async (req, res, next) => {
 
 blogRouter.put("/:id/comments/:commentId", async (req, res, next) => {
     try {
-
         const blog = await BlogModel.findOneAndUpdate(
             { _id: req.params.id, "comments._id": req.params.commentId },
             {
                 $set: {
-
-                    "comments.$": req.body,
+                    "comments.$": { ...req.body, _id: req.params.commentId }
                 },
             },
             { new: true }
