@@ -1,10 +1,9 @@
 import { Router } from 'express'
 import BlogModel from './schema.js'
 import createError from 'http-errors'
-// import { calculateReadTime } from '../utilities/wordCount.js'
 import multer from 'multer'
-import { v2 as cloudinary } from 'cloudinary'
-import { CloudinaryStorage } from 'multer-storage-cloudinary'
+import { mediaStorage } from '../utilities/mediaStorage.js'
+
 
 const blogRouter = Router()
 
@@ -44,7 +43,7 @@ blogRouter.post("/", async (req, res, next) => {
     }
 })
 
-blogRouter.post("/:id/img", multer({ storage: CloudinaryStorage }).single("cover"), async (req, res, next) => {
+blogRouter.post("/:id/img", multer({ storage: mediaStorage }).single("cover"), async (req, res, next) => {
     try {
         const id = req.params.id
         const Blog = await BlogModel.findById(id)
@@ -52,7 +51,6 @@ blogRouter.post("/:id/img", multer({ storage: CloudinaryStorage }).single("cover
             const modifiedBlog = await BlogModel.findByIdAndUpdate(id, { cover: req.file.path }, {
                 new: true // returns the modified user
             })
-            console.log(req.file.path)
             res.send(modifiedBlog)
         } else {
             next(createError(404, `Blog Post with id ${id} not found!`))
