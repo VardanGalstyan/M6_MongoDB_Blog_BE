@@ -20,12 +20,16 @@
   },
   "homepage": "https://github.com/VardanGalstyan/M6_MongoDB_Blog_BE#readme",
   "dependencies": {
+    "cloudinary": "^1.26.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-list-endpoints": "^6.0.0",
     "http-errors": "^1.8.0",
     "httperror": "^0.2.3",
-    "mongoose": "^6.0.3"
+    "mongoose": "^6.0.3",
+    "multer": "^1.4.3",
+    "multer-storage-cloudinary": "^4.0.0",
+    "striptags": "^3.2.0"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
