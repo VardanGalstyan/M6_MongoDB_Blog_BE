@@ -3,6 +3,7 @@ import BlogModel from './schema.js'
 import createError from 'http-errors'
 import multer from 'multer'
 import { mediaStorage } from '../utilities/mediaStorage.js'
+import q2m from 'query-to-mongo'
 
 
 const blogRouter = Router()
@@ -10,8 +11,9 @@ const blogRouter = Router()
 
 blogRouter.get("/", async (req, res, next) => {
     try {
-        const data = await BlogModel.find({})
-        res.send(data)
+        const query = q2m(req.query)
+        const { total, blogs } = await BlogModel.findBlogsWithAuthors(query)
+        res.send({ links: query.links("/blogs", total), total, blogs, pageTotal: Math.ceil(total / query.options.limit) })
     } catch (error) {
         console.log(error);
         next(error);
