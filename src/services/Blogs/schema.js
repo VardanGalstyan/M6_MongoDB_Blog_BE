@@ -22,16 +22,16 @@ const blogSchema = new Schema({
         timestamps: true
     })
 
-    blogSchema.static("findBlogsWithAuthors", async function (query) {
-        const total = await this.countDocuments(query.criteria)
-        const blogs = await this.find(query.criteria, query.options.fields)
-          .limit(query.options.limit)
-          .skip(query.options.skip)
-          .sort(query.options.sort) // no matter how I write them, mongo is going to apply  ALWAYS sort skip limit in this order
-          .populate("authors")
-      
-        return { total, blogs }
-      })
+blogSchema.static("findBlogsWithAuthors", async function (query) {
+    const total = await this.countDocuments(query.criteria)
+    const blogs = await this.find(query.criteria, query.options.fields)
+        .limit(query.options.limit)
+        .skip(query.options.skip)
+        .sort(query.options.sort) // no matter how I write them, mongo is going to apply  ALWAYS sort skip limit in this order
+        .populate("authors")
+
+    return { total, blogs }
+})
 
 export default model("Blog", blogSchema)
 

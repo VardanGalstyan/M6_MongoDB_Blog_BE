@@ -3,12 +3,13 @@ import AuthorsModel from './schema.js'
 import createError from 'http-errors'
 import multer from 'multer'
 import { mediaStorage } from '../utilities/mediaStorage.js'
+import { basicAuthMiddleware } from '../../auth/basic.js'
 
 
 const authorRouter = Router()
 
 
-authorRouter.get("/", async (req, res, next) => {
+authorRouter.get("/", basicAuthMiddleware, async (req, res, next) => {
     try {
         const data = await AuthorsModel.find({})
         res.send(data)
