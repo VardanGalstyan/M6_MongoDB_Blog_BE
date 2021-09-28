@@ -4,12 +4,13 @@ import createError from 'http-errors'
 import multer from 'multer'
 import { mediaStorage } from '../utilities/mediaStorage.js'
 import q2m from 'query-to-mongo'
+import { basicAuthMiddleware } from '../../auth/basic.js'
 
 
 const blogRouter = Router()
 
 
-blogRouter.get("/", async (req, res, next) => {
+blogRouter.get("/", basicAuthMiddleware, async (req, res, next) => {
     try {
         const query = q2m(req.query)
         const { total, blogs } = await BlogModel.findBlogsWithAuthors(query)

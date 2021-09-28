@@ -14,16 +14,19 @@ const authorsSchema = new Schema({
         timestamps: true
     })
 
-authorsSchema.pre('save', async function (next) {
-    const newUser = this
-    const plainPW = newUser.password
 
-    if (newUser.isModified("password")) {
-        newUser.password = await bcrypt.hash(plainPW, 10)
+// Encrypting the password
+authorsSchema.pre('save', async function (next) {
+    const newAuthor = this
+    const plainPW = newAuthor.password
+
+    if (newAuthor.isModified("password")) {
+        newAuthor.password = await bcrypt.hash(plainPW, 10)
     }
     next()
 })
 
+// removing unnecessary values
 authorsSchema.methods.toJSON = function () {
     const userDocument = this
     const userObject = userDocument.toObject()
@@ -32,13 +35,12 @@ authorsSchema.methods.toJSON = function () {
     return userObject
 }
 
-authorsSchema.static.checkCredentials = async function (email, plainPW) {
-    const author = await this.findOne({ email })
+authorsSchema.statics.checkCredentials = async function (username, plainPW) {
+    const author = await this.findOne({ username })
     if (author) {
-        const isMatch = await bcrypt.compare(plainPW, user.password)
-        if (isMatch) {
-            author
-        } else return null
+        const isMatch = await bcrypt.compare(plainPW, author.password)
+        if (isMatch) return author
+        else return null
     } else {
         return null
     }
