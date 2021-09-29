@@ -5,6 +5,8 @@ import multer from 'multer'
 import { mediaStorage } from '../utilities/mediaStorage.js'
 import q2m from 'query-to-mongo'
 import { calculateReadTime } from '../utilities/wordCount.js'
+import { JWTAuthMiddleWear } from '../../auth/token.js'
+
 
 
 
@@ -36,18 +38,18 @@ blogRouter.get("/:id", async (req, res, next) => {
     }
 })
 
-blogRouter.post("/", async (req, res, next) => {
+blogRouter.post("/", JWTAuthMiddleWear, async (req, res, next) => {
     try {
-        const newData = new BlogModel({...req.body, readTime: calculateReadTime(req.body.content)})
+        const newData = new BlogModel({ ...req.body, readTime: calculateReadTime(req.body.content), authors: req.author._id })
         await newData.save()
-        res.status(201).send()
+        res.status(201).send(newData._id)
     } catch (error) {
         console.log(error);
         next(error);
     }
 })
 
-blogRouter.post("/:id/img", multer({ storage: mediaStorage }).single("cover"), async (req, res, next) => {
+blogRouter.post("/:id/cover", multer({ storage: mediaStorage }).single("cover"), JWTAuthMiddleWear, async (req, res, next) => {
     try {
         const id = req.params.id
         const Blog = await BlogModel.findById(id)
@@ -64,7 +66,7 @@ blogRouter.post("/:id/img", multer({ storage: mediaStorage }).single("cover"), a
     }
 })
 
-blogRouter.put("/:id", async (req, res, next) => {
+blogRouter.put("/:id", JWTAuthMiddleWear, async (req, res, next) => {
 
     try {
 
@@ -84,7 +86,7 @@ blogRouter.put("/:id", async (req, res, next) => {
 })
 
 
-blogRouter.delete("/:id", async (req, res, next) => {
+blogRouter.delete("/:id", JWTAuthMiddleWear, async (req, res, next) => {
 
     try {
         const deletedData = await BlogModel.findByIdAndDelete(req.params.id)
@@ -105,7 +107,7 @@ blogRouter.delete("/:id", async (req, res, next) => {
 // C O M M E N T S    S E C T I O N
 
 
-blogRouter.get("/:id/comments", async (req, res, next) => {
+blogRouter.get("/:id/comments", JWTAuthMiddleWear, async (req, res, next) => {
     try {
         const blog = await BlogModel.findById(req.params.id)
         if (blog) {
@@ -119,7 +121,7 @@ blogRouter.get("/:id/comments", async (req, res, next) => {
     }
 })
 
-blogRouter.post("/:id/comments", async (req, res, next) => {
+blogRouter.post("/:id/comments", JWTAuthMiddleWear, async (req, res, next) => {
     try {
         const commentToAdd = { ...req.body }
         const blog = await BlogModel.findByIdAndUpdate(
@@ -141,7 +143,7 @@ blogRouter.post("/:id/comments", async (req, res, next) => {
     }
 })
 
-blogRouter.get("/:id/comments/:commentId", async (req, res, next) => {
+blogRouter.get("/:id/comments/:commentId", JWTAuthMiddleWear, async (req, res, next) => {
     try {
         const blog = await BlogModel.findById(req.params.id)
         if (blog) {
@@ -160,7 +162,7 @@ blogRouter.get("/:id/comments/:commentId", async (req, res, next) => {
     }
 })
 
-blogRouter.put("/:id/comments/:commentId", async (req, res, next) => {
+blogRouter.put("/:id/comments/:commentId", JWTAuthMiddleWear, async (req, res, next) => {
     try {
         const blog = await BlogModel.findOneAndUpdate(
             { _id: req.params.id, "comments._id": req.params.commentId },
@@ -182,7 +184,7 @@ blogRouter.put("/:id/comments/:commentId", async (req, res, next) => {
     }
 })
 
-blogRouter.delete("/:id/comments/:commentId", async (req, res, next) => {
+blogRouter.delete("/:id/comments/:commentId", JWTAuthMiddleWear, async (req, res, next) => {
     try {
         const blog = await BlogModel.findByIdAndUpdate(
             req.params.id,

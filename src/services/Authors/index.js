@@ -84,7 +84,7 @@ authorRouter.post("/me/img", multer({ storage: mediaStorage }).single("avatar"),
 
     try {
         const author = req.author
-          if (author) {
+        if (author) {
             const modifiedauthor = await AuthorsModel.findOneAndUpdate(author.username, { avatar: req.file.path }, {
                 new: true // returns the modified user
             })
