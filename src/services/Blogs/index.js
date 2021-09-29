@@ -4,13 +4,14 @@ import createError from 'http-errors'
 import multer from 'multer'
 import { mediaStorage } from '../utilities/mediaStorage.js'
 import q2m from 'query-to-mongo'
-import { basicAuthMiddleware } from '../../auth/basic.js'
+import { calculateReadTime } from '../utilities/wordCount.js'
+
 
 
 const blogRouter = Router()
 
 
-blogRouter.get("/", basicAuthMiddleware, async (req, res, next) => {
+blogRouter.get("/", async (req, res, next) => {
     try {
         const query = q2m(req.query)
         const { total, blogs } = await BlogModel.findBlogsWithAuthors(query)
@@ -37,7 +38,7 @@ blogRouter.get("/:id", async (req, res, next) => {
 
 blogRouter.post("/", async (req, res, next) => {
     try {
-        const newData = new BlogModel(req.body)
+        const newData = new BlogModel({...req.body, readTime: calculateReadTime(req.body.content)})
         await newData.save()
         res.status(201).send()
     } catch (error) {
