@@ -14,10 +14,11 @@ const server = express()
 passport.use('google', googleStrategy)
 server.use(cors())
 server.use(express.json())
+server.use(passport.initialize())
 
 
-server.use("/blogs", blogRouter)
 server.use("/authors", authorRouter)
+server.use("/blogs", blogRouter)
 
 server.use(badRequestErrorHandler)
 server.use(notFoundErrorHandler)

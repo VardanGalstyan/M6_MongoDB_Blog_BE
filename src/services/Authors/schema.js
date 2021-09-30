@@ -7,8 +7,9 @@ const { Schema, model } = mongoose
 const authorsSchema = new Schema({
     name: { type: String, required: true },
     username: { type: String, required: true },
-    password: { type: String, required: true },
+    password: { type: String, required: false },
     avatar: { type: String, required: false },
+    googleId: {type: String, required: false }
 },
     {
         timestamps: true

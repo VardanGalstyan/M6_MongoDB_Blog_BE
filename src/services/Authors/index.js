@@ -39,18 +39,13 @@ authorRouter.post("/login", async (req, res, next) => {
     }
 })
 
-authorRouter.get("/goolelogin", passport.authenticate('google', { scope: ["profile", "email"] }))
-//  async (req, res, next) => {
-//     try {
+authorRouter.get("/googleLogin", passport.authenticate('google', { scope: ["profile"] }))
 
-//     } catch (error) {
 
-//     }
-// })
-
-authorRouter.get("/googleredirect", passport.authenticate('google'), async (req, res, next) => {
+authorRouter.get("/googleRedirect", passport.authenticate('google'), async (req, res, next) => {
     try {
-
+        console.log('redirect');
+        res.redirect(`http://localhost:3000?accessToken=${req.user.tokens.accessToken}`)
     } catch (error) {
         console.log(error);
     }
