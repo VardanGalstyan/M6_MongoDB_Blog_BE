@@ -2,6 +2,7 @@ import { Router } from 'express'
 import AuthorsModel from './schema.js'
 import createError from 'http-errors'
 import multer from 'multer'
+import passport from 'passport'
 import { mediaStorage } from '../utilities/mediaStorage.js'
 import { generateJWToken } from '../../auth/tools.js'
 import createHttpError from 'http-errors'
@@ -14,8 +15,9 @@ const authorRouter = Router()
 authorRouter.post("/register", async (req, res, next) => {
     try {
         const newAuthor = new AuthorsModel(req.body)
-        await newAuthor.save()
-        res.status(201).send(newAuthor)
+        const savedAuthor = await newAuthor.save()
+        const accessToken = await generateJWToken(savedAuthor)
+        res.status(201).send({ savedAuthor, accessToken })
     } catch (error) {
         console.log(error);
         next(error);
@@ -32,6 +34,23 @@ authorRouter.post("/login", async (req, res, next) => {
         } else {
             next(createHttpError(401, "Credentials are not valid"))
         }
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+authorRouter.get("/goolelogin", passport.authenticate('google', { scope: ["profile", "email"] }))
+//  async (req, res, next) => {
+//     try {
+
+//     } catch (error) {
+
+//     }
+// })
+
+authorRouter.get("/googleredirect", passport.authenticate('google'), async (req, res, next) => {
+    try {
+
     } catch (error) {
         console.log(error);
     }
@@ -62,7 +81,7 @@ authorRouter.put("/me", JWTAuthMiddleWear, async (req, res, next) => {
 
 authorRouter.delete("/me", JWTAuthMiddleWear, async (req, res, next) => {
     try {
-        await req.user.deleteOne()
+        await req.author.deleteOne()
         res.send()
     } catch (error) {
         console.log(error);
@@ -143,6 +162,8 @@ authorRouter.delete("/:id", async (req, res, next) => {
         next(error);
     }
 })
+
+
 
 
 
